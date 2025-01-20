@@ -2,6 +2,7 @@ package views
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/DevAthhh/todo/internal/database"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,7 @@ func Views(router *gin.Engine) {
 	{
 		todo.POST("/create-node", create_node)
 		todo.POST("/delete-node", delete_node)
+		todo.POST("/update-node", update_node)
 	}
 }
 
@@ -35,6 +37,18 @@ func create_node(ctx *gin.Context) {
 func delete_node(ctx *gin.Context) {
 	id := ctx.PostForm("id")
 	database.Delete(id)
+
+	ctx.Redirect(302, "/")
+}
+
+func update_node(ctx *gin.Context) {
+	id, _ := strconv.Atoi(ctx.PostForm("done"))
+	todos := database.Select()
+	for i := 0; i < len(todos); i++ {
+		if todos[i].Id == id {
+			database.Update(id, !todos[i].Done)
+		}
+	}
 
 	ctx.Redirect(302, "/")
 }

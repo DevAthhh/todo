@@ -8,6 +8,7 @@ import (
 func Handle() *gin.Engine {
 	router := gin.Default()
 	router.LoadHTMLGlob("internal/templates/*")
+	router.Static("static/", "internal/static/")
 
 	views.Views(router)
 

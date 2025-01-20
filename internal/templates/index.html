@@ -4,23 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo'shnik</title>
+
+    <link rel="stylesheet" href="static/css/main.css">
 </head>
 <body>
-    <nav>
+    <h1 class="title">Todo'shnik</h1>
+    <nav class="panel">
         <form action="/t/create-node" method="post">
             <input type="text" name="title" placeholder="title">
             <button type="submit">create</button>
         </form>
     </nav>
 
-    {{ range .Todos }}
-    <div>
+    <div class="tasks">
+        {{ range .Todos }}
+    <div class="task">
+        {{ if .Done}}
+        <strike><h1>{{ .Title }}</h1></strike>
+        {{ else }}
         <h1>{{ .Title }}</h1>
-        <form action="/t/delete-node" method="post">
-            <input type="text" name="id" value="{{ .Id }}" hidden>
-            <button type="submit">Удалить</button>
-        </form>
+        {{ end }}
+        <div class="actions">
+            <form action="/t/delete-node" method="post">
+                <input type="text" name="id" value="{{ .Id }}" hidden>
+                <button type="submit">del</button>
+            </form>
+            <form action="/t/update-node" method="post">
+                <input type="text" name="done" value="{{ .Id }}" hidden>
+                <button type="submit">done</button>
+            </form> 
+        </div>
     </div>
     {{ end }}
+    </div>
 </body>
 </html>

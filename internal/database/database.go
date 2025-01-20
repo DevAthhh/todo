@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Insert(title string) {
+func Insert(title string) error {
 	db, err := sql.Open("postgres", "user=postgres password=1234 dbname=todos sslmode=disable")
 	if err != nil {
 		panic(err)
@@ -16,6 +16,8 @@ func Insert(title string) {
 	defer db.Close()
 
 	_, err = db.Exec(fmt.Sprintf("INSERT INTO todos (title, done) VALUES ('%s', false);", title))
+
+	return err
 }
 
 func Select() []todo.Todo {
@@ -44,12 +46,28 @@ func Select() []todo.Todo {
 	return todos
 }
 
-func Delete(id string) {
+func Delete(id string) error {
 	db, err := sql.Open("postgres", "user=postgres password=1234 dbname=todos sslmode=disable")
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 	_, err = db.Exec(fmt.Sprintf("DELETE FROM todos WHERE id=%s", id))
-	fmt.Println(id)
+
+	return err
+}
+
+func Update(id int, value bool) error {
+	db, err := sql.Open("postgres", "user=postgres password=1234 dbname=todos sslmode=disable")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	if value {
+		_, err = db.Exec(fmt.Sprintf("UPDATE todos SET done = 't' WHERE id=%d", id))
+	} else {
+		_, err = db.Exec(fmt.Sprintf("UPDATE todos SET done = 'f' WHERE id=%d", id))
+	}
+	return err
 }
